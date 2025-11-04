@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regex Search</title>
+  <style>
+    body {
+      width: 320px;
+      padding: 16px;
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+    
+    h3 {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+      color: #333;
+    }
+    
+    .input-group {
+      margin-bottom: 12px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #4285f4;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+    
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 8px;
+    }
+    
+    button {
+      flex: 1;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    #searchBtn {
+      background-color: #4285f4;
+      color: white;
+    }
+    
+    #searchBtn:hover {
+      background-color: #357ae8;
+    }
+    
+    #clearBtn {
+      background-color: #f1f3f4;
+      color: #5f6368;
+    }
+    
+    #clearBtn:hover {
+      background-color: #e8eaed;
+    }
+    
+    #status {
+      margin-top: 12px;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      display: none;
+    }
+    
+    #status.success {
+      background-color: #e6f4ea;
+      color: #137333;
+      display: block;
+    }
+    
+    #status.error {
+      background-color: #fce8e6;
+      color: #c5221f;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h3>RSearch</h3>
+  
+  <div class="checkbox-group">
+    <label>
+      <input type="radio" name="searchMode" id="regexMode" value="regex" checked />
+      <span>Regex Mode</span>
+    </label>
+    <label>
+      <input type="radio" name="searchMode" id="keywordMode" value="keyword" />
+      <span>Keywords Mode</span>
+    </label>
+  </div>
+  
+  <div class="input-group">
+    <label for="pattern" id="patternLabel">Regular Expression Pattern:</label>
+    <input type="text" id="pattern" placeholder="e.g., \d{3}-\d{4}" />
+  </div>
+  
+  <div class="checkbox-group">
+    <label>
+      <input type="checkbox" id="caseInsensitive" />
+      <span>Ignore Case (a=A)</span>
+    </label>
+    <label id="globalLabel">
+      <input type="checkbox" id="globalSearch" checked />
+      <span>Find All</span>
+    </label>
+    <label id="intersectionLabel" style="display: none;">
+      <input type="checkbox" id="intersectionMode" />
+      <span>AND Mode (all keywords required)</span>
+    </label>
+  </div>
+  
+  <div class="button-group">
+    <button id="searchBtn">Search</button>
+    <button id="clearBtn">Clear</button>
+  </div>
+  
+  <div id="status"></div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

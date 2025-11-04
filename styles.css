@@ -1,0 +1,8 @@
+/* highlight style for regex matches */
+.regex-search-highlight {
+  background-color: #ff4444;
+  color: #ffffff;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: bold;
+}

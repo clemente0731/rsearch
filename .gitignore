@@ -1,0 +1,36 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node modules (if added in future)
+node_modules/
+
+# Build files (if added in future)
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.log
+
+# Chrome extension packaging
+*.crx
+*.pem
+*.zip
+
+# Personal notes
+notes.txt
+todo.txt
+
+# Generated PNG icons (keep SVG source)
+# Remove this line when you create actual PNG icons
+icon16.png
+icon48.png
+icon128.png
