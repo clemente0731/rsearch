@@ -1,6 +1,6 @@
 # Quick Start Guide for RSearch
 
-## ?? For Users
+## For Users
 
 ### Installation (Local Testing)
 
@@ -19,11 +19,11 @@
 4. **Click Search**: Results highlighted on page
 5. **Click Clear**: Remove all highlights
 
-## ?? For Developers/Publishers
+## For Developers and Publishers
 
 ### Before Publishing to Chrome Web Store
 
-#### ? Checklist
+#### Checklist
 
 1. **Create PNG icons** (see ICONS_README.md):
    - [ ] icon16.png
@@ -48,7 +48,7 @@
    - [x] LICENSE
    - [x] CHANGELOG.md
 
-#### ?? Publishing Steps
+#### Publishing Steps
 
 1. Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
 2. Pay $5 one-time registration fee
@@ -62,32 +62,32 @@
 
 See **WEBSTORE_GUIDE.md** for detailed instructions.
 
-## ?? Project Structure
+## Project Structure
 
 ```
 chrome/
-??? manifest.json          # Extension config ??
-??? popup.html            # UI interface ??
-??? popup.js              # UI logic ??
-??? content.js            # Page manipulation ??
-??? styles.css            # Highlighting styles ??
-??? icon.svg              # SVG icon source ??
-??? icon*.png             # PNG icons (need to create) ???
-?
-??? README.md             # Main documentation ??
-??? LICENSE               # MIT License ??
-??? PRIVACY.md            # Privacy policy ??
-??? CHANGELOG.md          # Version history ??
-??? CONTRIBUTING.md       # Contribution guide ??
-??? .gitignore           # Git ignore rules ??
-?
-??? Guides/
-    ??? ICONS_README.md       # How to create icons
-    ??? WEBSTORE_GUIDE.md     # Publishing guide
-    ??? QUICK_START.md        # This file
+|-- manifest.json          # extension config
+|-- popup.html             # UI interface
+|-- popup.js               # UI logic
+|-- content.js             # page manipulation
+|-- styles.css             # highlighting styles
+|-- icon.svg               # SVG icon source
+|-- icon*.png              # PNG icons (create before publishing)
+|
+|-- README.md              # main documentation
+|-- LICENSE                # MIT License
+|-- PRIVACY.md             # privacy policy
+|-- CHANGELOG.md           # version history
+|-- CONTRIBUTING.md        # contribution guide
+|-- .gitignore             # Git ignore rules
+|
+|-- Guides/
+    |-- ICONS_README.md    # how to create icons
+    |-- WEBSTORE_GUIDE.md  # publishing guide
+    |-- QUICK_START.md     # this file
 ```
 
-## ?? Key Features
+## Key Features
 
 ### Regex Mode
 - Full regex support
@@ -103,7 +103,7 @@ chrome/
 - AND mode (all keywords required)
 - Missing keywords alert
 
-## ?? Next Steps
+## Next Steps
 
 ### For Local Development
 1. Make your changes
@@ -112,19 +112,19 @@ chrome/
 4. Submit PR to GitHub
 
 ### For Publishing
-1. ? Create icons (ICONS_README.md)
-2. ? Take screenshots
-3. ? Create ZIP package
-4. ? Submit to Web Store (WEBSTORE_GUIDE.md)
+1. create icons (ICONS_README.md)
+2. take screenshots
+3. create ZIP package
+4. submit to Web Store (WEBSTORE_GUIDE.md)
 
-## ?? Get Help
+## Get Help
 
-- ?? Read [README.md](README.md) for full documentation
-- ?? Visit [GitHub repo](https://github.com/clemente0731/rsearch)
-- ?? [Report issues](https://github.com/clemente0731/rsearch/issues)
-- ?? [Discussions](https://github.com/clemente0731/rsearch/discussions)
+- read [README.md](README.md) for full documentation
+- visit [GitHub repo](https://github.com/clemente0731/rsearch)
+- report issues: https://github.com/clemente0731/rsearch/issues
+- join discussions: https://github.com/clemente0731/rsearch/discussions
 
-## ?? Learn More
+## Learn More
 
 - **Chrome Extensions**: https://developer.chrome.com/docs/extensions/
 - **Manifest V3**: https://developer.chrome.com/docs/extensions/mv3/intro/
@@ -132,4 +132,4 @@ chrome/
 
 ---
 
-**Ready to publish? Follow WEBSTORE_GUIDE.md! ??**
+**Ready to publish? Follow WEBSTORE_GUIDE.md!**

@@ -12,13 +12,13 @@ RSearch is committed to protecting your privacy. This privacy policy explains ho
 
 RSearch does **NOT** collect, store, or transmit any of the following:
 
-- ? Personal information
-- ? Browsing history
-- ? Search queries or patterns
-- ? Page content
-- ? Cookies or tracking data
-- ? Usage statistics or analytics
-- ? Any identifiable information
+- personal information
+- browsing history
+- search queries or patterns
+- page content
+- cookies or tracking data
+- usage statistics or analytics
+- any identifiable information
 
 ### How RSearch Works
 
@@ -85,17 +85,17 @@ By using RSearch, you consent to this privacy policy.
 
 If you have any questions or concerns about this privacy policy:
 
-- ?? Open an issue on GitHub: https://github.com/clemente0731/rsearch/issues
-- ?? View the source code: https://github.com/clemente0731/rsearch
+- open an issue on GitHub: https://github.com/clemente0731/rsearch/issues
+- view the source code: https://github.com/clemente0731/rsearch
 
 ## Summary
 
 **RSearch is privacy-first:**
-- ? Zero data collection
-- ? No tracking
-- ? No external communications
-- ? Fully local operation
-- ? Open source and auditable
+- zero data collection
+- no tracking
+- no external communications
+- fully local operation
+- open source and auditable
 
 ---
 

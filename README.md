@@ -5,9 +5,9 @@
 
 A powerful and lightweight Chrome extension for advanced text searching on web pages with regex and multi-keyword support.
 
-## ?? Features
+## Features
 
-### ?? Two Search Modes
+### Two Search Modes
 
 **1. Regex Mode**
 - Full regular expression support
@@ -22,20 +22,20 @@ A powerful and lightweight Chrome extension for advanced text searching on web p
 - OR mode (default): Match any keyword
 - AND mode: All keywords must exist
 
-### ?? Smart Highlighting
+### Smart Highlighting
 
 - **Regex Mode**: Bold red highlighting
 - **Keywords Mode**: 8 vibrant colors for multiple keywords
-  - ?? Red
-  - ?? Green
-  - ?? Blue
-  - ?? Orange
-  - ?? Purple
-  - ?? Cyan
-  - ?? Deep Orange
-  - ?? Deep Purple
+  - Red
+  - Green
+  - Blue
+  - Orange
+  - Purple
+  - Cyan
+  - Deep Orange
+  - Deep Purple
 
-### ? Additional Features
+### Additional Features
 
 - Auto-scroll to first match
 - Match count display
@@ -45,7 +45,7 @@ A powerful and lightweight Chrome extension for advanced text searching on web p
 - No data collection
 - Works on all websites
 
-## ?? Installation
+## Installation
 
 ### From Chrome Web Store (Recommended)
 1. Visit [RSearch on Chrome Web Store](#) (Coming soon)
@@ -62,7 +62,7 @@ A powerful and lightweight Chrome extension for advanced text searching on web p
 4. Click "Load unpacked"
 5. Select the `rsearch` directory
 
-## ?? Usage
+## Usage
 
 ### Basic Usage
 
@@ -97,23 +97,23 @@ Result: Highlights any of these words with different colors
 #### Keywords Mode (AND)
 ```
 Input: user login success
-AND Mode: ? (checked)
+AND Mode: (checked)
 Result: Only highlights if ALL three words exist on the page
         Shows "Missing keywords: xxx" if any are absent
 ```
 
-## ?? Privacy
+## Privacy
 
 RSearch respects your privacy:
-- ? No data collection
-- ? No external network requests
-- ? No tracking or analytics
-- ? All processing happens locally
-- ? Open source and transparent
+  - No data collection
+  - No external network requests
+  - No tracking or analytics
+  - All processing happens locally
+  - Open source and transparent
 
 See [PRIVACY.md](PRIVACY.md) for details.
 
-## ??? Development
+## Development
 
 ### Prerequisites
 - Google Chrome or Chromium-based browser
@@ -122,25 +122,25 @@ See [PRIVACY.md](PRIVACY.md) for details.
 ### Project Structure
 ```
 rsearch/
-??? manifest.json       # Extension configuration
-??? popup.html          # Extension popup UI
-??? popup.js           # Popup logic
-??? content.js         # Page content manipulation
-??? styles.css         # Highlight styles
-??? README.md          # This file
-??? LICENSE            # MIT License
-??? PRIVACY.md         # Privacy policy
-??? CHANGELOG.md       # Version history
+|-- manifest.json       # extension configuration
+|-- popup.html          # extension popup UI
+|-- popup.js            # popup logic
+|-- content.js          # page content manipulation
+|-- styles.css          # highlight styles
+|-- README.md           # this file
+|-- LICENSE             # MIT License
+|-- PRIVACY.md          # privacy policy
+|-- CHANGELOG.md        # version history
 ```
 
 ### Building from Source
 No build process required. The extension runs directly from source files.
 
-## ?? Changelog
+## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for version history.
 
-## ?? Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -150,28 +150,28 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## ?? License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## ?? Author
+## Author
 
 **clemente0731**
 
 - GitHub: [@clemente0731](https://github.com/clemente0731)
 
-## ?? Acknowledgments
+## Acknowledgments
 
 - Inspired by browser's native search functionality
-- Built with ?? for developers and power users
+- Built with care for developers and power users
 
-## ?? Support
+## Support
 
 If you encounter any issues or have questions:
-- ?? [Report a bug](https://github.com/clemente0731/rsearch/issues)
-- ?? [Request a feature](https://github.com/clemente0731/rsearch/issues)
-- ?? [Read the documentation](https://github.com/clemente0731/rsearch)
+  - [Report a bug](https://github.com/clemente0731/rsearch/issues)
+  - [Request a feature](https://github.com/clemente0731/rsearch/issues)
+  - [Read the documentation](https://github.com/clemente0731/rsearch)
 
 ---
 
-**Enjoy searching! ???**
+**Enjoy searching!**

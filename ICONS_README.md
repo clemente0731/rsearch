@@ -19,9 +19,9 @@ You need to create PNG icons in the following sizes:
 
 ### Icon Design Concept
 The current `icon.svg` design features:
-- ?? Blue circular background (#4285f4)
-- ?? White magnifying glass
-- `.*` Regex pattern inside
+- blue circular background (#4285f4)
+- white magnifying glass
+- `.*` regex pattern inside
 
 ### Design Tips
 1. **Keep it simple**: Icons should be recognizable at small sizes

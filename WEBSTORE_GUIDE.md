@@ -2,37 +2,37 @@
 
 Complete guide for publishing RSearch to the Chrome Web Store.
 
-## ?? Pre-Publishing Checklist
+## Pre-Publishing Checklist
 
-### ? Required Files
-- [x] `manifest.json` - Properly configured
-- [x] `README.md` - Complete documentation
+### Required Files
+- [x] `manifest.json` - properly configured
+- [x] `README.md` - complete documentation
 - [x] `LICENSE` - MIT License
-- [x] `PRIVACY.md` - Privacy policy
-- [x] `CHANGELOG.md` - Version history
-- [ ] `icon16.png`, `icon48.png`, `icon128.png` - Extension icons
+- [x] `PRIVACY.md` - privacy policy
+- [x] `CHANGELOG.md` - version history
+- [ ] `icon16.png`, `icon48.png`, `icon128.png` - extension icons
 - [ ] Store images (440x280, screenshots)
 
-### ? Code Quality
-- [x] No console.log in production
+### Code Quality
+- [x] No `console.log` in production
 - [x] Error handling implemented
 - [x] Code is well-commented
 - [x] Follows Chrome extension best practices
 
-### ? Testing
+### Testing
 - [ ] Tested on multiple websites
 - [ ] Tested both search modes
 - [ ] Tested all options
 - [ ] No console errors
 - [ ] Works on HTTP and HTTPS sites
 
-## ?? Step-by-Step Publishing Process
+## Step-by-Step Publishing Process
 
 ### Step 1: Create Developer Account
 
 1. Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
 2. Sign in with your Google account
-3. Pay the **one-time $5 registration fee**
+3. Pay the one-time $5 registration fee
 4. Complete your developer profile
 
 ### Step 2: Prepare Your Package
@@ -78,7 +78,7 @@ Complete guide for publishing RSearch to the Chrome Web Store.
 ### Step 3: Upload to Chrome Web Store
 
 1. Go to [Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-2. Click **"New Item"**
+2. Click "New Item"
 3. Upload your ZIP file
 4. Fill in the store listing (see below)
 5. Submit for review
@@ -87,7 +87,7 @@ Complete guide for publishing RSearch to the Chrome Web Store.
 
 #### Item Details
 
-**Category**: 
+**Category**:
 - Primary: Productivity
 - Secondary: Developer Tools
 
@@ -109,51 +109,51 @@ Powerful search tool with regex and multi-keyword support. Highlight text with c
 ```
 RSearch is a powerful and privacy-focused search extension for Chrome that goes beyond basic text search.
 
-?? TWO POWERFUL SEARCH MODES
+TWO POWERFUL SEARCH MODES
 
 Regex Mode:
-? Full regular expression support for advanced pattern matching
-? Find emails, phone numbers, URLs, and complex patterns
-? Case-sensitive and global search options
-? Real-time regex validation
+- Full regular expression support for advanced pattern matching
+- Find emails, phone numbers, URLs, and complex patterns
+- Case-sensitive and global search options
+- Real-time regex validation
 
 Keywords Mode:
-? Search multiple keywords in one go
-? Each keyword highlighted in a different color (8 vibrant colors)
-? OR mode: Match any keyword
-? AND mode: All keywords must exist on the page
-? Space or comma-separated input
+- Search multiple keywords in one go
+- Each keyword highlighted in a different color (8 vibrant colors)
+- OR mode: Match any keyword
+- AND mode: All keywords must exist on the page
+- Space or comma-separated input
 
-?? SMART HIGHLIGHTING
+SMART HIGHLIGHTING
 
-? Regex: Bold red highlighting
-? Keywords: 8 distinct colors for easy identification
-? Auto-scroll to first match
-? Match count display
-? One-click clear function
+- Regex: Bold red highlighting
+- Keywords: 8 distinct colors for easy identification
+- Auto-scroll to first match
+- Match count display
+- One-click clear function
 
-? KEY FEATURES
+KEY FEATURES
 
-? No data collection - 100% privacy-first
-? Works on all websites
-? Lightning fast performance
-? Clean, intuitive interface
-? Open source and transparent
-? No external network requests
+- No data collection - 100% privacy-first
+- Works on all websites
+- Lightning fast performance
+- Clean, intuitive interface
+- Open source and transparent
+- No external network requests
 
-?? PRIVACY FIRST
+PRIVACY FIRST
 
-? Zero data collection
-? No tracking or analytics
-? All processing happens locally in your browser
-? No external server communication
-? Open source: https://github.com/clemente0731/rsearch
+- Zero data collection
+- No tracking or analytics
+- All processing happens locally in your browser
+- No external server communication
+- Open source: https://github.com/clemente0731/rsearch
 
 Perfect for:
-? Developers searching through code
-? Researchers analyzing web content
-? Content writers finding specific terms
-? Anyone who needs advanced search capabilities
+- Developers searching through code
+- Researchers analyzing web content
+- Content writers finding specific terms
+- Anyone who needs advanced search capabilities
 
 Try RSearch today and experience the most powerful search tool for Chrome!
 ```
@@ -175,17 +175,17 @@ https://github.com/clemente0731/rsearch/issues
 
 #### Store Assets
 
-**Icons** (Required):
+**Icons** (required):
 - 128x128 icon (already in manifest)
 
-**Screenshots** (Required - at least 1, up to 5):
+**Screenshots** (required - at least 1, up to 5):
 1. Main interface showing both modes
 2. Regex search example with highlighting
 3. Keywords mode with multi-color highlights
 4. AND mode demonstration
 5. Clear interface with options
 
-**Promotional images** (Optional but recommended):
+**Promotional images** (optional but recommended):
 - Small tile: 440x280
 - Large tile: 920x680
 
@@ -216,36 +216,36 @@ https://github.com/clemente0731/rsearch/issues
 ### Step 7: Submit for Review
 
 1. Review all information
-2. Click **"Submit for Review"**
+2. Click "Submit for Review"
 3. Wait for review (typically 1-3 days, can be longer)
 
-## ?? After Submission
+## After Submission
 
 ### What Happens Next?
 
 1. **Automated checks** (immediate):
    - Malware scan
    - Policy violations check
-   
+
 2. **Manual review** (1-3 days):
    - Privacy compliance
    - Functionality verification
    - Content review
 
 3. **Possible outcomes**:
-   - ? **Approved**: Your extension goes live!
-   - ?? **Rejected**: Review feedback and resubmit
-   - ?? **More information needed**: Respond to reviewer questions
+   - **Approved**: Your extension goes live
+   - **Rejected**: Review feedback and resubmit
+   - **More information needed**: Respond to reviewer questions
 
 ### Common Rejection Reasons
 
-1. **Insufficient privacy policy**: Make sure PRIVACY.md is accessible
-2. **Misleading description**: Be accurate about features
-3. **Poor quality images**: Use high-resolution screenshots
-4. **Permissions not justified**: Explain why you need each permission
-5. **Trademark issues**: Avoid using trademarked names
+1. Insufficient privacy policy: Make sure PRIVACY.md is accessible
+2. Misleading description: Be accurate about features
+3. Poor quality images: Use high-resolution screenshots
+4. Permissions not justified: Explain why you need each permission
+5. Trademark issues: Avoid using trademarked names
 
-## ?? Updating Your Extension
+## Updating Your Extension
 
 For future updates:
 
@@ -260,7 +260,7 @@ For future updates:
 
 3. Create new ZIP package
 
-4. Go to Developer Dashboard ? Your item ? "Package"
+4. Go to Developer Dashboard > Your item > "Package"
 
 5. Upload new ZIP
 
@@ -268,54 +268,54 @@ For future updates:
 
 7. Submit for review
 
-## ?? Best Practices
+## Best Practices
 
 ### After Launch
 
-1. **Monitor reviews**: Respond to user feedback
-2. **Track analytics**: Use Chrome Web Store analytics
-3. **Regular updates**: Fix bugs and add features
-4. **Community engagement**: Respond to GitHub issues
-5. **Documentation**: Keep README.md updated
+1. Monitor reviews and respond to user feedback
+2. Track analytics using Chrome Web Store insights
+3. Ship regular updates to fix bugs and add features
+4. Engage with the community through GitHub issues
+5. Keep README.md updated
 
 ### Marketing Tips
 
 1. Share on social media
-2. Post on developer communities (Reddit, HackerNews)
-3. Write a blog post about development process
-4. Make a demo video
+2. Post on developer communities (Reddit, Hacker News)
+3. Write a blog post about the development process
+4. Produce a demo video
 5. Engage with users on GitHub
 
-## ?? Troubleshooting
+## Troubleshooting
 
 ### Extension Rejected?
 
-1. Read rejection email carefully
-2. Fix issues mentioned
+1. Read the rejection email carefully
+2. Fix the issues that were mentioned
 3. Update CHANGELOG.md
-4. Increment version number (e.g., 1.0.0 ? 1.0.1)
+4. Increment the version number (for example, 1.0.0 -> 1.0.1)
 5. Resubmit
 
 ### Need to Appeal?
 
 If you believe your extension was rejected incorrectly:
 1. Reply to the rejection email
-2. Provide clear explanation
-3. Reference relevant policies
+2. Provide a clear explanation
+3. Reference the relevant policies
 4. Be professional and patient
 
-## ?? Support Resources
+## Support Resources
 
 - [Chrome Web Store Developer Policies](https://developer.chrome.com/docs/webstore/program-policies/)
 - [Chrome Extension Documentation](https://developer.chrome.com/docs/extensions/)
 - [Chrome Web Store Developer Support](https://support.google.com/chrome_webstore/)
 
-## ? Final Checklist Before Submission
+## Final Checklist Before Submission
 
 - [ ] All icons created (16, 48, 128)
 - [ ] Screenshots prepared (1-5 images)
 - [ ] Privacy policy accessible online
-- [ ] Manifest.json validated
+- [ ] `manifest.json` validated
 - [ ] Tested thoroughly
 - [ ] README.md is complete
 - [ ] LICENSE file included
@@ -327,6 +327,6 @@ If you believe your extension was rejected incorrectly:
 
 ---
 
-**Good luck with your submission! ??**
+**Good luck with your submission!**
 
 Questions? Open an issue: https://github.com/clemente0731/rsearch/issues

@@ -1,10 +1,10 @@
 # Contributing to RSearch
 
-First off, thank you for considering contributing to RSearch! ??
+First off, thank you for considering contributing to RSearch!
 
 ## How Can I Contribute?
 
-### ?? Reporting Bugs
+### Reporting Bugs
 
 Before creating bug reports, please check existing issues to avoid duplicates.
 
@@ -16,7 +16,7 @@ When you create a bug report, please include:
 - **Chrome version** and OS
 - **Extension version**
 
-### ?? Suggesting Enhancements
+### Suggesting Enhancements
 
 Enhancement suggestions are welcome! Please include:
 - **Clear use case** for the feature
@@ -24,7 +24,7 @@ Enhancement suggestions are welcome! Please include:
 - **Why this enhancement would be useful** to most users
 - **Possible implementation approach** (optional)
 
-### ?? Pull Requests
+### Pull Requests
 
 1. **Fork the repository** and create your branch from `main`
 2. **Make your changes** following the coding standards below
@@ -113,16 +113,16 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
 rsearch/
-??? manifest.json       # Extension configuration
-??? popup.html          # Extension popup UI
-??? popup.js           # Popup logic and event handlers
-??? content.js         # Content script for page manipulation
-??? styles.css         # CSS for highlighting
-??? README.md          # Main documentation
-??? LICENSE            # MIT License
-??? PRIVACY.md         # Privacy policy
-??? CHANGELOG.md       # Version history
-??? CONTRIBUTING.md    # This file
+|-- manifest.json       # extension configuration
+|-- popup.html          # extension popup UI
+|-- popup.js            # popup logic and event handlers
+|-- content.js          # content script for page manipulation
+|-- styles.css          # CSS for highlighting
+|-- README.md           # main documentation
+|-- LICENSE             # MIT License
+|-- PRIVACY.md          # privacy policy
+|-- CHANGELOG.md        # version history
+|-- CONTRIBUTING.md     # this file
 ```
 
 ## Code Review Process
@@ -161,4 +161,4 @@ By contributing, you agree that your contributions will be licensed under the MI
 
 ---
 
-**Thank you for contributing to RSearch! ??**
+**Thank you for contributing to RSearch!**
