@@ -59,23 +59,54 @@ async function injectScripts(tabId) {
     // mark as injected
     injectedTabs.add(tabId);
   } catch (error) {
-    // if injection fails, it might already be injected or page doesn't allow it
-    // try to continue anyway
+    injectedTabs.delete(tabId);
     console.error('Injection error:', error);
+    if (error && error.message && error.message.includes('Cannot access contents of url')) {
+      throw new Error('content scripts cannot run on this page');
+    }
+    if (error && error.message) {
+      throw new Error('failed to inject content scripts: ' + error.message);
+    }
+    throw new Error('failed to inject content scripts');
+  }
+}
+
+async function sendMessageToTab(tabId, message) {
+  try {
+    const response = await chrome.tabs.sendMessage(tabId, message);
+    return response;
+  } catch (error) {
+    const needsRetry = error && error.message && error.message.includes('Receiving end does not exist');
+    if (!needsRetry) {
+      throw error;
+    }
+
+    injectedTabs.delete(tabId);
+    await injectScripts(tabId);
+
+    try {
+      const retryResponse = await chrome.tabs.sendMessage(tabId, message);
+      return retryResponse;
+    } catch (retryError) {
+      if (retryError && retryError.message && retryError.message.includes('Receiving end does not exist')) {
+        throw new Error('content script is unavailable in this tab');
+      }
+      throw retryError;
+    }
   }
 }
 
 // search button click handler
 searchBtn.addEventListener('click', async () => {
   const pattern = patternInput.value.trim();
-  
+
   if (!pattern) {
     showStatus('Please enter a search pattern or keywords', 'error');
     return;
   }
-  
+
   const isRegexMode = regexModeRadio.checked;
-  
+
   // validate regex pattern in regex mode
   if (isRegexMode) {
     try {
@@ -86,24 +117,24 @@ searchBtn.addEventListener('click', async () => {
       return;
     }
   }
-  
+
   // get active tab
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-  
+
   if (!tabs || tabs.length === 0) {
     showStatus('No active tab found', 'error');
     return;
   }
-  
+
   const tabId = tabs[0].id;
-  
+
   try {
     // inject content script and CSS if not already injected
     await injectScripts(tabId);
-    
+
     // prepare search parameters based on mode
     let searchParams;
-    
+
     if (isRegexMode) {
       searchParams = {
         action: 'search',
@@ -120,17 +151,17 @@ searchBtn.addEventListener('click', async () => {
         intersectionMode: intersectionModeCheckbox.checked
       };
     }
-    
+
     // send message to content script
-    const response = await chrome.tabs.sendMessage(tabId, searchParams);
-    
+    const response = await sendMessageToTab(tabId, searchParams);
+
     if (response && response.success) {
       const count = response.count || 0;
       showStatus('Found ' + count + ' match(es)', 'success');
     } else {
       const errorMsg = response.error || 'Search failed';
       const missingKeywords = response.missingKeywords || [];
-      
+
       if (missingKeywords.length > 0) {
         showStatus('Missing keywords: ' + missingKeywords.join(', '), 'error');
       } else {
@@ -150,16 +181,16 @@ clearBtn.addEventListener('click', async () => {
     showStatus('No active tab found', 'error');
     return;
   }
-  
+
   const tabId = tabs[0].id;
-  
+
   try {
     // inject content script if not already injected
     await injectScripts(tabId);
-    
+
     // send clear message
-    const response = await chrome.tabs.sendMessage(tabId, { action: 'clear' });
-    
+    const response = await sendMessageToTab(tabId, { action: 'clear' });
+
     if (response && response.success) {
       showStatus('Highlights cleared', 'success');
       patternInput.value = '';
