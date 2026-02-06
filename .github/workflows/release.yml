@@ -1,0 +1,78 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Verify manifest version matches tag
+        run: |
+          MANIFEST_VERSION=$(node -e "console.log(JSON.parse(require('fs').readFileSync('manifest.json','utf8')).version)")
+          TAG_VERSION="${{ steps.version.outputs.VERSION }}"
+          if [ "$MANIFEST_VERSION" != "$TAG_VERSION" ]; then
+            echo "manifest.json version ($MANIFEST_VERSION) does not match tag (v$TAG_VERSION)"
+            exit 1
+          fi
+          echo "version match: $MANIFEST_VERSION"
+
+      - name: Package extension
+        run: |
+          FILENAME="rsearch-${{ steps.version.outputs.VERSION }}.zip"
+          zip -r "$FILENAME" \
+            manifest.json \
+            popup.html \
+            popup.js \
+            content.js \
+            background.js \
+            styles.css \
+            icon16.png \
+            icon48.png \
+            icon128.png
+          echo "ARTIFACT=$FILENAME" >> $GITHUB_OUTPUT
+        id: package
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          cat << 'EOF' > release_notes.md
+          ## RSearch v${{ steps.version.outputs.VERSION }}
+
+          ### Installation
+
+          **Chrome Web Store (Recommended):**
+          [Install from Chrome Web Store](https://chromewebstore.google.com/)
+
+          **Manual Install:**
+          1. Download `rsearch-${{ steps.version.outputs.VERSION }}.zip` below
+          2. Unzip to a folder
+          3. Open `chrome://extensions/`
+          4. Enable "Developer mode"
+          5. Click "Load unpacked" and select the folder
+
+          ### Changes
+          See [CHANGELOG.md](https://github.com/clemente0731/rsearch/blob/main/CHANGELOG.md) for details.
+          EOF
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: RSearch v${{ steps.version.outputs.VERSION }}
+          body_path: release_notes.md
+          files: ${{ steps.package.outputs.ARTIFACT }}
+          draft: false
+          prerelease: false
