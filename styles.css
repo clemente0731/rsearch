@@ -1,8 +1,54 @@
 /* highlight style for regex matches */
+/* NOTE: background-color and color are set dynamically via JavaScript inline styles */
+/* to support different colors for different keywords */
 .regex-search-highlight {
-  background-color: #ff4444;
-  color: #ffffff;
-  padding: 2px 4px;
-  border-radius: 3px;
-  font-weight: bold;
+  padding: 2px 4px !important;
+  border-radius: 3px !important;
+  font-weight: bold !important;
+  display: inline !important;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3) !important;
+}
+
+/* highlight style for AND mode row matches - Background */
+.rsearch-row-highlight-bg {
+  background-color: #ffe6e6 !important; /* Soft Pink */
+}
+
+/* highlight style for AND mode row matches - Start Indicator */
+.rsearch-row-highlight-start {
+  box-shadow: inset 4px 0 0 #ff4444 !important; /* Red indicator on left */
+  padding-left: 4px !important; /* Make space for the bar */
+}
+
+/* Scrollbar Marker Container */
+#rsearch-scrollbar-container {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 16px !important;
+  height: 100vh !important;
+  z-index: 2147483647 !important; /* Max z-index */
+  pointer-events: none !important; /* Let clicks pass through */
+  background: transparent !important;
+}
+
+/* Individual Marker */
+.rsearch-scrollbar-marker {
+  position: absolute !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 4px !important; /* Marker height */
+  z-index: 2147483647 !important;
+  border-radius: 2px !important;
+  box-shadow: 0 0 2px rgba(0,0,0,0.5) !important;
+  pointer-events: auto !important; /* Allow clicking marker to scroll */
+  cursor: pointer !important;
+  transform: translateY(-50%) !important; /* Center on position */
+}
+
+/* Hover effect for better visibility */
+.rsearch-scrollbar-marker:hover {
+  height: 8px !important;
+  transform: translateY(-50%) scaleX(1.5) !important;
+  transform-origin: right center !important;
 }

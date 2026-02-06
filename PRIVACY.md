@@ -1,6 +1,6 @@
 # Privacy Policy for RSearch
 
-**Last Updated: November 4, 2025**
+**Last Updated: February 5, 2026**
 
 ## Overview
 
@@ -12,13 +12,13 @@ RSearch is committed to protecting your privacy. This privacy policy explains ho
 
 RSearch does **NOT** collect, store, or transmit any of the following:
 
-- personal information
-- browsing history
-- search queries or patterns
-- page content
-- cookies or tracking data
-- usage statistics or analytics
-- any identifiable information
+- Personal information
+- Browsing history
+- Search queries or patterns
+- Page content
+- Cookies or tracking data
+- Usage statistics or analytics
+- Any identifiable information
 
 ### How RSearch Works
 
@@ -26,7 +26,7 @@ RSearch operates entirely locally in your browser:
 
 1. **Local Processing Only**: All search and highlighting operations happen directly in your browser
 2. **No External Servers**: The extension does not communicate with any external servers
-3. **No Data Storage**: No search data or page content is stored anywhere
+3. **Local Storage Only**: Settings and presets are stored locally in Chrome's storage API
 4. **No Tracking**: We do not track your usage or behavior in any way
 
 ## Permissions Explained
@@ -35,17 +35,42 @@ RSearch requires the following Chrome permissions:
 
 ### `activeTab`
 - **Why**: To access the current tab's content for search and highlighting
-- **Usage**: Only activated when you click the extension icon
+- **Usage**: Only activated when you click the extension icon or when auto-search is enabled
 - **Scope**: Limited to the active tab only
 
 ### `scripting`
 - **Why**: To inject search and highlighting functionality into web pages
 - **Usage**: Dynamically loads content scripts when you perform a search
-- **Scope**: Only affects the current tab and only when you initiate a search
+- **Scope**: Only affects the current tab
+
+### `storage`
+- **Why**: To save your preferences and custom presets locally
+- **Usage**: Stores preset configurations and switch state
+- **Scope**: Data stored locally in your browser only, never transmitted
+
+### `tabs`
+- **Why**: To enable auto-search feature when switching tabs or loading new pages
+- **Usage**: Monitors tab changes to trigger auto-search when enabled
+- **Scope**: Only reads tab URL to determine if search should run
+
+## Data Storage
+
+### What Is Stored Locally
+
+- Preset configurations (keywords, names)
+- Active preset selection
+- Auto-search toggle state
+
+### Where Data Is Stored
+
+All data is stored using Chrome's `chrome.storage.local` API, which:
+- Keeps data on your local device only
+- Does not sync to Google servers
+- Is cleared when you uninstall the extension
 
 ## Data Security
 
-Since RSearch does not collect, store, or transmit any data:
+Since RSearch does not collect, store externally, or transmit any data:
 - There is no data to be compromised
 - Your search patterns remain private on your device
 - No risk of data breaches or leaks
@@ -57,6 +82,7 @@ RSearch does **NOT** use any third-party services, including:
 - No error tracking services
 - No advertising networks
 - No social media integrations
+- No external APIs
 
 ## Changes to This Policy
 
@@ -85,17 +111,18 @@ By using RSearch, you consent to this privacy policy.
 
 If you have any questions or concerns about this privacy policy:
 
-- open an issue on GitHub: https://github.com/clemente0731/rsearch/issues
-- view the source code: https://github.com/clemente0731/rsearch
+- Open an issue on GitHub: https://github.com/clemente0731/rsearch/issues
+- View the source code: https://github.com/clemente0731/rsearch
 
 ## Summary
 
 **RSearch is privacy-first:**
-- zero data collection
-- no tracking
-- no external communications
-- fully local operation
-- open source and auditable
+- ✅ Zero data collection
+- ✅ No tracking
+- ✅ No external communications
+- ✅ Fully local operation
+- ✅ Open source and auditable
+- ✅ Local storage only
 
 ---
 

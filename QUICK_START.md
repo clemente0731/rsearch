@@ -2,127 +2,175 @@
 
 ## For Users
 
-### Installation (Local Testing)
+### Installation
 
+**From Chrome Web Store:**
+1. Visit [Chrome Web Store](https://chromewebstore.google.com/)
+2. Search for "RSearch"
+3. Click "Add to Chrome"
+4. Done!
+
+**From Source (Developer Mode):**
 1. Download or clone the repository
 2. Open Chrome: `chrome://extensions/`
 3. Enable "Developer mode" (top right)
 4. Click "Load unpacked"
-5. Select the `chrome` directory
+5. Select the project directory
 6. Done! Click the RSearch icon to start
 
 ### Basic Usage
 
-1. **Choose mode**: Regex or Keywords
-2. **Enter search**: Pattern or keywords
-3. **Set options**: Case sensitivity, AND/OR mode
-4. **Click Search**: Results highlighted on page
-5. **Click Clear**: Remove all highlights
+1. **Click RSearch icon** in toolbar
+2. **Toggle switch ON** (green) for auto-search
+3. **Or click "Search"** for manual search
+4. **Click hotspot items** to navigate to error areas
+5. **Click "Clear"** to remove highlights
 
-## For Developers and Publishers
+### Auto-Search Mode
 
-### Before Publishing to Chrome Web Store
+When the switch is ON (green):
+- New pages auto-search on load
+- Switching tabs auto-searches
+- Highlights error keywords automatically
 
-#### Checklist
+When the switch is OFF (red):
+- No auto-search
+- Highlights cleared
 
-1. **Create PNG icons** (see ICONS_README.md):
-   - [ ] icon16.png
-   - [ ] icon48.png  
-   - [ ] icon128.png
+### Managing Presets
 
-2. **Create screenshots** (1280x800 or 640x400):
-   - [ ] Main interface
-   - [ ] Regex mode example
-   - [ ] Keywords mode example
-   - [ ] Options demonstration
+1. Select preset from dropdown
+2. Click "Edit" to open CSV editor
+3. Format: `rank,keyword` (one per line)
+4. Click "Save Changes"
+5. Click "Apply" to use
 
-3. **Test thoroughly**:
-   - [ ] Test on multiple websites
-   - [ ] Test both modes
-   - [ ] Test all options
-   - [ ] Check for errors
+### Top 3 Density Areas
 
-4. **Review documentation**:
-   - [x] README.md
-   - [x] PRIVACY.md
-   - [x] LICENSE
-   - [x] CHANGELOG.md
+After searching:
+- Shows top 3 areas with most matches
+- Click item to jump to that area
+- Target element highlighted temporarily
 
-#### Publishing Steps
+---
+
+## For Publishers
+
+### Chrome Web Store Checklist
+
+#### Required Assets
+
+- [ ] **Icons** (PNG format):
+  - icon16.png (16x16)
+  - icon48.png (48x48)
+  - icon128.png (128x128)
+
+- [ ] **Screenshots** (1280x800 or 640x400):
+  - Main interface
+  - Keywords mode with highlights
+  - Top 3 density areas
+  - Auto-search toggle
+
+- [ ] **Promotional images** (optional):
+  - Small tile: 440x280
+  - Large tile: 920x680
+  - Marquee: 1400x560
+
+#### Required Information
+
+- [ ] Extension name: RSearch
+- [ ] Short description (132 chars max)
+- [ ] Detailed description
+- [ ] Category: Developer Tools / Productivity
+- [ ] Language: English
+- [ ] Privacy policy URL
+
+### Publishing Steps
 
 1. Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
 2. Pay $5 one-time registration fee
 3. Create ZIP package:
    ```bash
-   zip -r rsearch-v1.0.0.zip . -x "*.git*" -x "*README*.md" -x "WEBSTORE_GUIDE.md"
+   npm run package
+   # or manually:
+   zip -r rsearch.zip manifest.json popup.html popup.js content.js background.js styles.css icon*.png
    ```
-4. Upload ZIP file
-5. Fill in store listing (see WEBSTORE_GUIDE.md)
-6. Submit for review
+4. Click "New Item" → Upload ZIP
+5. Fill in store listing details
+6. Add screenshots and icons
+7. Submit for review (1-3 days)
 
-See **WEBSTORE_GUIDE.md** for detailed instructions.
+### Store Listing Content
+
+**Short Description (132 chars):**
+```
+Advanced search tool with regex, multi-keyword support, and error log analysis. Auto-highlights errors on any webpage.
+```
+
+**Detailed Description:**
+```
+RSearch - Advanced Text Search & Error Analysis
+
+Features:
+• Keywords Mode with 363+ pre-configured error patterns
+• Regex Mode for advanced pattern matching  
+• Severity-based color coding (8 colors)
+• Top 3 density areas for error hotspots
+• Auto-search on new pages and tab switches
+• CSV-based preset system (3 slots, 500 keywords each)
+• Real-time search progress with ETA
+
+Perfect for:
+• Developers debugging logs
+• QA engineers analyzing error reports
+• Anyone searching for specific text patterns
+
+Privacy:
+• No data collection
+• No external requests
+• Fully local processing
+• Open source
+```
+
+### Post-Publishing
+
+- [ ] Monitor reviews and respond
+- [ ] Track download statistics
+- [ ] Update for bug fixes
+- [ ] Add new features based on feedback
+
+---
 
 ## Project Structure
 
 ```
-chrome/
-|-- manifest.json          # extension config
-|-- popup.html             # UI interface
-|-- popup.js               # UI logic
-|-- content.js             # page manipulation
-|-- styles.css             # highlighting styles
-|-- icon.svg               # SVG icon source
-|-- icon*.png              # PNG icons (create before publishing)
-|
-|-- README.md              # main documentation
-|-- LICENSE                # MIT License
-|-- PRIVACY.md             # privacy policy
-|-- CHANGELOG.md           # version history
-|-- CONTRIBUTING.md        # contribution guide
-|-- .gitignore             # Git ignore rules
-|
-|-- Guides/
-    |-- ICONS_README.md    # how to create icons
-    |-- WEBSTORE_GUIDE.md  # publishing guide
-    |-- QUICK_START.md     # this file
+rsearch/
+├── manifest.json          # Extension configuration
+├── popup.html             # UI interface
+├── popup.js               # UI logic & presets
+├── content.js             # Page highlighting
+├── background.js          # Auto-search worker
+├── styles.css             # Highlight styles
+├── icon.svg               # SVG source
+├── icon*.png              # PNG icons
+│
+├── README.md              # Main documentation
+├── LICENSE                # MIT License
+├── PRIVACY.md             # Privacy policy
+├── CHANGELOG.md           # Version history
+├── CONTRIBUTING.md        # Contribution guide
+├── QUICK_START.md         # This file
+└── scripts/
+    └── package-extension.mjs  # Packaging script
 ```
 
-## Key Features
-
-### Regex Mode
-- Full regex support
-- Case sensitive/insensitive
-- Global search option
-- Real-time validation
-- Red bold highlighting
-
-### Keywords Mode
-- Multi-keyword search
-- 8 color highlighting
-- OR mode (any keyword)
-- AND mode (all keywords required)
-- Missing keywords alert
-
-## Next Steps
-
-### For Local Development
-1. Make your changes
-2. Test in Chrome
-3. Reload extension to see changes
-4. Submit PR to GitHub
-
-### For Publishing
-1. create icons (ICONS_README.md)
-2. take screenshots
-3. create ZIP package
-4. submit to Web Store (WEBSTORE_GUIDE.md)
+---
 
 ## Get Help
 
-- read [README.md](README.md) for full documentation
-- visit [GitHub repo](https://github.com/clemente0731/rsearch)
-- report issues: https://github.com/clemente0731/rsearch/issues
-- join discussions: https://github.com/clemente0731/rsearch/discussions
+- Read [README.md](README.md) for full documentation
+- Visit [GitHub repo](https://github.com/clemente0731/rsearch)
+- Report issues: https://github.com/clemente0731/rsearch/issues
 
 ## Learn More
 
@@ -132,4 +180,4 @@ chrome/
 
 ---
 
-**Ready to publish? Follow WEBSTORE_GUIDE.md!**
+**Ready to publish? Follow the checklist above!**

@@ -1,9 +1,21 @@
 {
   "name": "rsearch-extension",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "description": "Advanced search with regex, 363+ error keywords, auto-highlight for Chrome",
   "private": true,
   "type": "module",
   "scripts": {
-    "package": "node scripts/package-extension.mjs"
-  }
+    "package": "node scripts/package-extension.mjs",
+    "icons": "node scripts/generate-icons.mjs",
+    "clean": "rm -rf dist node_modules package-lock.json"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clemente0731/rsearch.git"
+  },
+  "author": "clemente0731",
+  "license": "MIT"
 }

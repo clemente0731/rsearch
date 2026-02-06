@@ -1,16 +1,27 @@
 {
   "manifest_version": 3,
-  "name": "RSearch",
-  "version": "1.0.0",
-  "description": "Advanced search tool with regex and multi-keyword support for web pages",
+  "name": "RSearch - Error Log Search & Highlighter",
+  "version": "2.0.0",
+  "description": "Advanced search with regex, 363+ error keywords, auto-highlight, and density hotspots. Perfect for developers debugging logs.",
   "author": "clemente0731",
   "homepage_url": "https://github.com/clemente0731/rsearch",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "storage",
+    "tabs"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    },
+    "default_title": "RSearch - Click to search"
   },
   "icons": {
     "16": "icon16.png",

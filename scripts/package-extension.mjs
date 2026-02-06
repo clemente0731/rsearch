@@ -138,6 +138,7 @@ async function main() {
       'content.js',
       'popup.js',
       'popup.html',
+      'background.js',
       'styles.css'
     ];
 

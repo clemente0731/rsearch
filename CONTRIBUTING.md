@@ -75,9 +75,10 @@ function highlightElement(element) {
 Before submitting:
 1. Test on **multiple websites**
 2. Test **both search modes** (regex and keywords)
-3. Test **all options** (case-sensitive, AND mode, etc.)
-4. Test **edge cases** (empty input, special characters, etc.)
-5. Check for **console errors**
+3. Test **auto-search feature** (new pages, tab switching)
+4. Test **preset management** (edit, save, apply)
+5. Test **Top 3 density areas** navigation
+6. Check for **console errors**
 
 ## Commit Message Guidelines
 
@@ -113,17 +114,44 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
 rsearch/
-|-- manifest.json       # extension configuration
-|-- popup.html          # extension popup UI
-|-- popup.js            # popup logic and event handlers
-|-- content.js          # content script for page manipulation
-|-- styles.css          # CSS for highlighting
-|-- README.md           # main documentation
-|-- LICENSE             # MIT License
-|-- PRIVACY.md          # privacy policy
-|-- CHANGELOG.md        # version history
-|-- CONTRIBUTING.md     # this file
+├── manifest.json       # Extension configuration
+├── popup.html          # Extension popup UI
+├── popup.js            # Popup logic, presets, search
+├── content.js          # Content script for highlighting
+├── background.js       # Service worker for auto-search
+├── styles.css          # CSS for highlighting
+├── icon.svg            # SVG icon source
+├── icon*.png           # PNG icons (16, 48, 128)
+│
+├── README.md           # Main documentation
+├── LICENSE             # MIT License
+├── PRIVACY.md          # Privacy policy
+├── CHANGELOG.md        # Version history
+├── CONTRIBUTING.md     # This file
+├── QUICK_START.md      # Quick start guide
+│
+└── scripts/
+    └── package-extension.mjs  # Packaging script
 ```
+
+## Key Components
+
+### popup.js
+- UI event handlers
+- Preset management (load, save, edit)
+- Search mode switching
+- Communication with content script
+
+### content.js
+- DOM traversal and text matching
+- Highlight creation and removal
+- Hotspot tracking and navigation
+- Message handling from popup/background
+
+### background.js
+- Tab change monitoring
+- Auto-search triggering
+- Storage access for presets
 
 ## Code Review Process
 

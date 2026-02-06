@@ -3,153 +3,646 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Regex Search</title>
+  <title>RSearch</title>
   <style>
-    body {
-      width: 320px;
-      padding: 16px;
-      font-family: Arial, sans-serif;
-      margin: 0;
+    :root {
+      --background: #ffffff;
+      --foreground: #0a0a0a;
+      --muted: #f4f4f5;
+      --muted-foreground: #71717a;
+      --border: #e4e4e7;
+      --input: #e4e4e7;
+      --primary: #dc2626;
+      --primary-foreground: #ffffff;
+      --secondary: #f4f4f5;
+      --secondary-foreground: #18181b;
+      --accent: #f4f4f5;
+      --accent-foreground: #18181b;
+      --destructive: #ef4444;
+      --ring: #dc2626;
+      --radius: 6px;
     }
     
-    h3 {
-      margin: 0 0 12px 0;
-      font-size: 16px;
-      color: #333;
-    }
-    
-    .input-group {
-      margin-bottom: 12px;
-    }
-    
-    label {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 12px;
-      color: #666;
-    }
-    
-    input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+    * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html, body {
+      width: 340px;
+      min-height: fit-content;
+      max-height: none;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+    }
+    
+    body {
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
       font-size: 14px;
+      line-height: 1.5;
+      color: var(--foreground);
+      background: var(--background);
+    }
+    
+    /* header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .logo {
+      width: 24px;
+      height: 24px;
+      background: var(--primary);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--primary-foreground);
+    }
+    
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    
+    .close-btn {
+      margin-left: auto;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--muted-foreground);
+      transition: all 0.15s ease;
+    }
+    
+    .close-btn:hover {
+      background: var(--muted);
+      color: var(--foreground);
+    }
+    
+    /* section */
+    .section {
+      margin-bottom: 16px;
+    }
+    
+    .section-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    /* radio group */
+    .radio-group {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    
+    .radio-group label {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border-right: 1px solid var(--border);
+      background: var(--background);
+      color: var(--muted-foreground);
+    }
+    
+    .radio-group label:last-child {
+      border-right: none;
+    }
+    
+    .radio-group input {
+      display: none;
+    }
+    
+    .radio-group input:checked + span {
+      color: var(--foreground);
+    }
+    
+    .radio-group label:has(input:checked) {
+      background: var(--muted);
+      color: var(--foreground);
+    }
+    
+    /* preset card */
+    .preset-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+    }
+    
+    .preset-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .preset-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    /* select */
+    select {
+      flex: 1;
+      height: 32px;
+      padding: 0 8px;
+      font-size: 13px;
+      border: 1px solid var(--input);
+      border-radius: var(--radius);
+      background: var(--background);
+      color: var(--foreground);
+      cursor: pointer;
+      outline: none;
+    }
+    
+    select:focus {
+      border-color: var(--ring);
+      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+    }
+    
+    /* input */
+    input[type="text"] {
+      flex: 1;
+      height: 32px;
+      padding: 0 10px;
+      font-size: 13px;
+      border: 1px solid var(--input);
+      border-radius: var(--radius);
+      background: var(--background);
+      color: var(--foreground);
+      outline: none;
     }
     
     input[type="text"]:focus {
-      outline: none;
-      border-color: #4285f4;
+      border-color: var(--ring);
+      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
     }
     
+    input[type="text"]::placeholder {
+      color: var(--muted-foreground);
+    }
+    
+    #pattern {
+      height: 36px;
+      font-size: 12px;
+    }
+    
+    /* badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 9999px;
+      background: var(--muted);
+      color: var(--muted-foreground);
+      white-space: nowrap;
+    }
+    
+    /* button */
+    button {
+      height: 32px;
+      padding: 0 12px;
+      font-size: 13px;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      outline: none;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+    
+    .btn-primary:hover {
+      background: #b91c1c;
+    }
+    
+    .btn-secondary {
+      background: var(--secondary);
+      color: var(--secondary-foreground);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--accent);
+    }
+    
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted-foreground);
+    }
+    
+    .btn-ghost:hover {
+      background: var(--muted);
+      color: var(--foreground);
+    }
+    
+    /* button group */
+    .btn-group {
+      display: flex;
+      gap: 6px;
+    }
+    
+    .btn-group button {
+      flex: 1;
+    }
+    
+    /* csv editor */
+    .csv-editor {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .csv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    
+    .csv-header span {
+      font-size: 11px;
+      color: var(--muted-foreground);
+    }
+    
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 8px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      border: 1px solid var(--input);
+      border-radius: var(--radius);
+      background: var(--background);
+      color: var(--foreground);
+      resize: vertical;
+      min-height: 80px;
+      max-height: 180px;
+      outline: none;
+    }
+    
+    textarea:focus {
+      border-color: var(--ring);
+      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+    }
+    
+    #saveCsvBtn {
+      width: 100%;
+      margin-top: 8px;
+    }
+    
+    /* divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+    
+    /* label */
+    .label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--foreground);
+    }
+    
+    /* checkbox */
     .checkbox-group {
       display: flex;
+      flex-wrap: wrap;
       gap: 12px;
       margin-bottom: 12px;
-      font-size: 12px;
     }
     
     .checkbox-group label {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--foreground);
+      cursor: pointer;
     }
     
-    .button-group {
+    .checkbox-group input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--input);
+      border-radius: 4px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+    
+    /* main buttons */
+    .main-buttons {
       display: flex;
       gap: 8px;
     }
     
-    button {
+    .main-buttons button {
       flex: 1;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
+      height: 36px;
       font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s;
     }
     
-    #searchBtn {
-      background-color: #4285f4;
-      color: white;
-    }
-    
-    #searchBtn:hover {
-      background-color: #357ae8;
-    }
-    
-    #clearBtn {
-      background-color: #f1f3f4;
-      color: #5f6368;
-    }
-    
-    #clearBtn:hover {
-      background-color: #e8eaed;
-    }
-    
+    /* status */
     #status {
       margin-top: 12px;
-      padding: 8px;
-      border-radius: 4px;
-      font-size: 12px;
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      font-size: 13px;
       display: none;
     }
     
     #status.success {
-      background-color: #e6f4ea;
-      color: #137333;
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
       display: block;
     }
     
     #status.error {
-      background-color: #fce8e6;
-      color: #c5221f;
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
       display: block;
+    }
+    
+    #status.progress {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+      display: block;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    #status.info {
+      background: #f8fafc;
+      color: #475569;
+      border: 1px solid var(--border);
+      display: block;
+    }
+    
+    /* Hotspots Section */
+    .hotspots-container {
+      margin-top: 12px;
+      padding: 8px;
+      background: var(--secondary);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    
+    .hotspots-header {
+      margin-bottom: 8px;
+    }
+    
+    .hotspots-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+    
+    .hotspots-hint {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    
+    .hotspots-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .hotspot-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px;
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) - 2px);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .hotspot-item:hover {
+      border-color: var(--primary);
+      background: #fef2f2;
+    }
+    
+    .hotspot-rank {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 20px;
+      background: var(--primary);
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    
+    .hotspot-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex: 1;
+    }
+    
+    .hotspot-line {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--foreground);
+    }
+    
+    .hotspot-preview {
+      font-size: 10px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* switch toggle */
+    .switch {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      margin-left: auto;
+      margin-right: 8px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ef4444;
+      transition: 0.3s;
+      border-radius: 20px;
+    }
+    
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    
+    .switch input:checked + .switch-slider {
+      background-color: #22c55e;
+    }
+    
+    .switch input:checked + .switch-slider:before {
+      transform: translateX(16px);
     }
   </style>
 </head>
 <body>
-  <h3>RSearch</h3>
-  
-  <div class="checkbox-group">
-    <label>
-      <input type="radio" name="searchMode" id="regexMode" value="regex" checked />
-      <span>Regex Mode</span>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">R</div>
+    <h1>RSearch</h1>
+    <label class="switch" title="Toggle highlight">
+      <input type="checkbox" id="toggleSwitch" checked />
+      <span class="switch-slider"></span>
     </label>
-    <label>
-      <input type="radio" name="searchMode" id="keywordMode" value="keyword" />
-      <span>Keywords Mode</span>
-    </label>
+    <button id="closeBtn" class="close-btn" title="Close">&#x2715;</button>
   </div>
   
-  <div class="input-group">
-    <label for="pattern" id="patternLabel">Regular Expression Pattern:</label>
-    <input type="text" id="pattern" placeholder="e.g., \d{3}-\d{4}" />
+  <!-- Mode Toggle -->
+  <div class="section">
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="searchMode" id="keywordMode" value="keyword" checked />
+        <span>Keywords</span>
+      </label>
+      <label>
+        <input type="radio" name="searchMode" id="regexMode" value="regex" />
+        <span>Regex</span>
+      </label>
+    </div>
   </div>
   
+  <!-- Preset Section -->
+  <div class="section">
+    <div class="section-title">Presets</div>
+    <div class="preset-card">
+      <div class="preset-row">
+        <select id="presetSelect"></select>
+      </div>
+      <div class="preset-row">
+        <input type="text" id="presetNameInput" placeholder="Preset name" />
+        <span id="presetInfo" class="badge">0/500</span>
+      </div>
+      <div class="preset-row btn-group">
+        <button id="applyPresetBtn" class="btn-primary">Apply</button>
+        <button id="editCsvBtn" class="btn-secondary">Edit</button>
+        <button id="resetCsvBtn" class="btn-ghost">Reset</button>
+      </div>
+      
+      <div id="csvEditorContainer" class="csv-editor">
+        <div class="csv-header">
+          <span>Format: rank,key_word</span>
+          <span>Max 500 keywords</span>
+        </div>
+        <textarea id="csvTextarea" spellcheck="false" placeholder="rank,key_word&#10;1,error&#10;2,failed&#10;3,exception"></textarea>
+        <button id="saveCsvBtn" class="btn-primary">Save Changes</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="divider"></div>
+  
+  <!-- Search Input -->
+  <div class="section">
+    <label for="pattern" id="patternLabel" class="label">Pattern</label>
+    <input type="text" id="pattern" placeholder="Enter regex pattern..." />
+  </div>
+  
+  <!-- Options -->
   <div class="checkbox-group">
     <label>
-      <input type="checkbox" id="caseInsensitive" />
-      <span>Ignore Case (a=A)</span>
+      <input type="checkbox" id="caseInsensitive" checked />
+      <span>Ignore Case</span>
     </label>
     <label id="globalLabel">
       <input type="checkbox" id="globalSearch" checked />
       <span>Find All</span>
     </label>
-    <label id="intersectionLabel" style="display: none;">
-      <input type="checkbox" id="intersectionMode" />
-      <span>AND Mode (all keywords required)</span>
-    </label>
   </div>
   
-  <div class="button-group">
-    <button id="searchBtn">Search</button>
-    <button id="clearBtn">Clear</button>
+  <!-- Main Buttons -->
+  <div class="main-buttons">
+    <button id="searchBtn" class="btn-primary">Search</button>
+    <button id="clearBtn" class="btn-secondary">Clear</button>
   </div>
   
   <div id="status"></div>
+  
+  <!-- Hotspots Section -->
+  <div id="hotspotsContainer" class="hotspots-container" style="display: none;">
+    <div class="hotspots-header">
+    <div class="hotspots-title">Top 3 hotspots</div>
+      <div class="hotspots-hint">Click to jump to high density areas</div>
+    </div>
+    <div id="hotspotsList" class="hotspots-list"></div>
+  </div>
   
   <script src="popup.js"></script>
 </body>

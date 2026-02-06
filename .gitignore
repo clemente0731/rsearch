@@ -1,6 +1,7 @@
 # OS files
 .DS_Store
 Thumbs.db
+Desktop.ini
 
 # Editor files
 .vscode/
@@ -8,17 +9,20 @@ Thumbs.db
 *.swp
 *.swo
 *~
+.cursor/
 
-# Node modules (if added in future)
+# Node
 node_modules/
+package-lock.json
 
-# Build files (if added in future)
+# Build output
 dist/
 build/
 
 # Temporary files
 *.tmp
 *.log
+*.bak
 
 # Chrome extension packaging
 *.crx
@@ -28,9 +32,3 @@ build/
 # Personal notes
 notes.txt
 todo.txt
-
-# Generated PNG icons (keep SVG source)
-# Remove this line when you create actual PNG icons
-icon16.png
-icon48.png
-icon128.png
