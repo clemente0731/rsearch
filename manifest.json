@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "RSearch - Error Log Search & Highlighter",
-  "version": "2.0.0",
+  "version": "3.0.2",
   "description": "Regex & keyword search with 363+ error patterns and auto-highlight.",
   "author": "clemente0731",
   "homepage_url": "https://github.com/clemente0731/rsearch",
