@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "RSearch - Error Log Search & Highlighter",
   "version": "2.0.0",
-  "description": "Advanced search with regex, 363+ error keywords, auto-highlight, and density hotspots. Perfect for developers debugging logs.",
+  "description": "Regex & keyword search with 363+ error patterns and auto-highlight.",
   "author": "clemente0731",
   "homepage_url": "https://github.com/clemente0731/rsearch",
   "permissions": [
@@ -13,6 +13,9 @@
   ],
   "background": {
     "service_worker": "background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
   },
   "action": {
     "default_popup": "popup.html",

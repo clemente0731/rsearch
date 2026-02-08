@@ -25,15 +25,37 @@ jobs:
           MANIFEST_VERSION=$(node -e "console.log(JSON.parse(require('fs').readFileSync('manifest.json','utf8')).version)")
           TAG_VERSION="${{ steps.version.outputs.VERSION }}"
           if [ "$MANIFEST_VERSION" != "$TAG_VERSION" ]; then
-            echo "manifest.json version ($MANIFEST_VERSION) does not match tag (v$TAG_VERSION)"
+            echo "ERROR: manifest.json version ($MANIFEST_VERSION) does not match tag (v$TAG_VERSION)"
             exit 1
           fi
           echo "version match: $MANIFEST_VERSION"
 
+      - name: Validate manifest structure
+        run: |
+          node -e "
+            const m = JSON.parse(require('fs').readFileSync('manifest.json','utf8'));
+            if (m.manifest_version !== 3) { console.error('must be MV3'); process.exit(1); }
+            if (m.name.length > 45) { console.error('name exceeds 45 chars'); process.exit(1); }
+            if (m.description.length > 132) { console.error('description exceeds 132 chars'); process.exit(1); }
+            console.log('manifest validation passed');
+          "
+
+      - name: Verify required files exist
+        run: |
+          REQUIRED="manifest.json popup.html popup.js content.js background.js styles.css icon16.png icon48.png icon128.png"
+          for f in $REQUIRED; do
+            if [ ! -f "$f" ]; then
+              echo "ERROR: required file missing: $f"
+              exit 1
+            fi
+          done
+          echo "all required files present"
+
       - name: Package extension
+        id: package
         run: |
           FILENAME="rsearch-${{ steps.version.outputs.VERSION }}.zip"
-          zip -r "$FILENAME" \
+          zip -j "$FILENAME" \
             manifest.json \
             popup.html \
             popup.js \
@@ -44,17 +66,24 @@ jobs:
             icon48.png \
             icon128.png
           echo "ARTIFACT=$FILENAME" >> $GITHUB_OUTPUT
-        id: package
+          echo "packaged: $FILENAME"
 
       - name: Generate release notes
-        id: notes
         run: |
-          cat << 'EOF' > release_notes.md
+          cat > release_notes.md << 'NOTES'
           ## RSearch v${{ steps.version.outputs.VERSION }}
 
-          ### Installation
+          ### Features
+          - Keywords mode with 363+ error patterns
+          - Regex mode with full pattern support
+          - Severity-based color coding (8 levels)
+          - Top 3 density areas with click navigation
+          - Auto-search on page load and tab switch
+          - CSV preset system (3 slots, 500 keywords each)
 
-          **Chrome Web Store (Recommended):**
+          ### Install
+
+          **Chrome Web Store:**
           [Install from Chrome Web Store](https://chromewebstore.google.com/)
 
           **Manual Install:**
@@ -64,9 +93,9 @@ jobs:
           4. Enable "Developer mode"
           5. Click "Load unpacked" and select the folder
 
-          ### Changes
-          See [CHANGELOG.md](https://github.com/clemente0731/rsearch/blob/main/CHANGELOG.md) for details.
-          EOF
+          ### Changelog
+          See [CHANGELOG.md](https://github.com/clemente0731/rsearch/blob/main/CHANGELOG.md)
+          NOTES
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>RSearch Promo Image Generator</title>
+<style>
+body { background: #1a1a2e; color: #eee; font-family: Arial, sans-serif; padding: 20px; }
+canvas { display: block; margin: 20px 0; border: 1px solid #333; }
+h2 { color: #e879f9; margin-top: 40px; }
+button { background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; margin: 5px; }
+button:hover { background: #b91c1c; }
+.info { color: #94a3b8; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>RSearch Promo Image Generator</h1>
+<p class="info">Click each button to download the image. All images are 24-bit PNG without alpha.</p>
+
+<h2>1. Screenshot (1280x800) *Required</h2>
+<canvas id="c1" width="1280" height="800"></canvas>
+<button onclick="download('c1','screenshot-1280x800.png')">Download Screenshot</button>
+
+<h2>2. Small Promo Tile (440x280)</h2>
+<canvas id="c2" width="440" height="280"></canvas>
+<button onclick="download('c2','promo-small-440x280.png')">Download Small Tile</button>
+
+<h2>3. Marquee Banner (1400x560)</h2>
+<canvas id="c3" width="1400" height="560"></canvas>
+<button onclick="download('c3','promo-marquee-1400x560.png')">Download Marquee</button>
+
+<br><br>
+<button onclick="downloadAll()">Download All</button>
+
+<script>
+const COLORS = ['#c026d3','#db2777','#dc2626','#ea580c','#f97316','#eab308','#84cc16','#22c55e'];
+
+function drawGrid(ctx, w, h) {
+  const grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, '#0f0a2e');
+  grad.addColorStop(0.5, '#1a1145');
+  grad.addColorStop(1, '#0d0820');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.strokeStyle = 'rgba(139,92,246,0.12)';
+  ctx.lineWidth = 1;
+  const horizon = h * 0.42;
+  for (let i = 0; i < 25; i++) {
+    const y = horizon + i * i * 1.8;
+    if (y > h) break;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+  const cx = w / 2;
+  for (let i = -15; i <= 15; i++) {
+    ctx.beginPath(); ctx.moveTo(cx, horizon); ctx.lineTo(cx + i * (w / 8), h); ctx.stroke();
+  }
+  const g = ctx.createRadialGradient(cx, 0, 0, cx, 0, w * 0.4);
+  g.addColorStop(0, 'rgba(192,38,211,0.10)');
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h * 0.5);
+}
+
+function neonText(ctx, text, x, y, size, color, glow) {
+  ctx.save();
+  ctx.font = 'bold ' + size + 'px Arial,sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.shadowColor = glow; ctx.shadowBlur = 25; ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+  ctx.shadowBlur = 10; ctx.fillText(text, x, y);
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#ffffff'; ctx.globalAlpha = 0.25; ctx.fillText(text, x, y);
+  ctx.restore();
+}
+
+function drawIcon(ctx, x, y, s) {
+  ctx.save();
+  ctx.shadowColor = '#dc2626'; ctx.shadowBlur = 15;
+  ctx.fillStyle = '#dc2626';
+  ctx.beginPath(); ctx.roundRect(x, y, s, s, s * 0.15); ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#fff'; ctx.font = 'bold ' + (s * 0.55) + 'px Arial';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('R', x + s/2, y + s/2);
+  ctx.restore();
+}
+
+function colorBar(ctx, x, y, w, h) {
+  const bw = w / COLORS.length;
+  COLORS.forEach((c, i) => {
+    ctx.fillStyle = c;
+    ctx.beginPath(); ctx.roundRect(x + i * bw, y, bw - 2, h, 3); ctx.fill();
+  });
+}
+
+const LOGS = [
+  {t:'[ERROR] CUDA out of memory',k:'ERROR',c:'#dc2626'},
+  {t:'[WARN] deprecated API call',k:'WARN',c:'#f97316'},
+  {t:'RuntimeError: expected float',k:'RuntimeError',c:'#c026d3'},
+  {t:'[INFO] model loaded successfully',k:null,c:null},
+  {t:'SIGSEGV in worker thread #3',k:'SIGSEGV',c:'#db2777'},
+  {t:'[ERROR] connection refused',k:'ERROR',c:'#dc2626'},
+  {t:'ValueError: invalid tensor shape',k:'ValueError',c:'#ea580c'},
+  {t:'[DEBUG] checkpoint saved to disk',k:null,c:null},
+  {t:'OOM killer invoked for pid 1234',k:'OOM',c:'#c026d3'},
+  {t:'[WARN] request timeout exceeded',k:'WARN',c:'#f97316'},
+  {t:'segfault at 0x00000000 rip',k:'segfault',c:'#db2777'},
+  {t:'[INFO] training epoch complete',k:null,c:null},
+  {t:'SIGABRT: abort signal received',k:'SIGABRT',c:'#c026d3'},
+  {t:'[ERROR] no matching function',k:'no matching function',c:'#dc2626'},
+];
+
+function drawLogs(ctx, x, y, w, h, n) {
+  const lh = h / n;
+  ctx.font = '12px Monaco,Consolas,monospace';
+  for (let i = 0; i < n; i++) {
+    const log = LOGS[i % LOGS.length];
+    const ly = y + i * lh + lh * 0.7;
+    if (log.k && log.c) {
+      const idx = log.t.indexOf(log.k);
+      const before = log.t.substring(0, idx);
+      const after = log.t.substring(idx + log.k.length);
+      ctx.fillStyle = 'rgba(200,200,220,0.5)'; ctx.fillText(before, x+10, ly);
+      const bw = ctx.measureText(before).width;
+      const kw = ctx.measureText(log.k).width;
+      ctx.fillStyle = log.c; ctx.globalAlpha = 0.25;
+      ctx.fillRect(x+10+bw-2, ly-11, kw+4, 15);
+      ctx.globalAlpha = 1; ctx.fillStyle = log.c;
+      ctx.fillText(log.k, x+10+bw, ly);
+      ctx.fillStyle = 'rgba(200,200,220,0.5)'; ctx.fillText(after, x+10+bw+kw, ly);
+    } else {
+      ctx.fillStyle = 'rgba(200,200,220,0.35)'; ctx.fillText(log.t, x+10, ly);
+    }
+  }
+}
+
+function pill(ctx, x, y, w, h, text) {
+  ctx.fillStyle = 'rgba(139,92,246,0.22)';
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, h/2); ctx.fill();
+  ctx.fillStyle = '#e2e8f0'; ctx.font = '12px Arial'; ctx.textAlign = 'center';
+  ctx.fillText(text, x + w/2, y + h/2 + 4);
+}
+
+// === Screenshot 1280x800 ===
+(function() {
+  const c = document.getElementById('c1'); const ctx = c.getContext('2d');
+  const w = 1280, h = 800;
+  drawGrid(ctx, w, h);
+  neonText(ctx, 'RSearch', w/2, 55, 44, '#e879f9', '#c026d3');
+  neonText(ctx, 'Error Log Search & Highlighter', w/2, 100, 18, '#94a3b8', '#6366f1');
+
+  // browser window
+  const bx=60,by=145,bw=780,bh=600;
+  ctx.fillStyle='rgba(25,18,50,0.85)'; ctx.strokeStyle='rgba(139,92,246,0.25)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,8); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='rgba(35,28,60,0.9)'; ctx.fillRect(bx,by,bw,28);
+  ['#ef4444','#eab308','#22c55e'].forEach((c,i)=>{ctx.fillStyle=c;ctx.beginPath();ctx.arc(bx+18+i*16,by+14,4,0,Math.PI*2);ctx.fill()});
+  drawLogs(ctx, bx, by+32, bw, bh-32, 30);
+
+  // popup
+  const px=900,py=145,pw=320,ph=540;
+  ctx.fillStyle='rgba(18,14,40,0.92)'; ctx.strokeStyle='rgba(192,38,211,0.35)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.roundRect(px,py,pw,ph,8); ctx.fill(); ctx.stroke();
+
+  drawIcon(ctx, px+14, py+14, 28);
+  ctx.fillStyle='#fff'; ctx.font='bold 15px Arial'; ctx.textAlign='left'; ctx.fillText('RSearch', px+50, py+33);
+
+  // switch
+  ctx.fillStyle='#22c55e'; ctx.beginPath(); ctx.roundRect(px+235,py+20,34,18,9); ctx.fill();
+  ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(px+256,py+29,6,0,Math.PI*2); ctx.fill();
+
+  // mode toggle
+  ctx.fillStyle='rgba(139,92,246,0.25)'; ctx.beginPath(); ctx.roundRect(px+14,py+55,pw-28,28,6); ctx.fill();
+  ctx.fillStyle='#e879f9'; ctx.font='12px Arial'; ctx.textAlign='left'; ctx.fillText('Keywords', px+28, py+74);
+  ctx.fillStyle='#64748b'; ctx.fillText('Regex', px+110, py+74);
+
+  // input
+  ctx.strokeStyle='rgba(139,92,246,0.35)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.roundRect(px+14,py+98,pw-28,32,6); ctx.stroke();
+  ctx.fillStyle='#94a3b8'; ctx.font='10px Monaco,monospace'; ctx.fillText('error, fail, SIGSEGV, OOM...', px+22, py+119);
+
+  // buttons
+  ctx.fillStyle='#dc2626'; ctx.beginPath(); ctx.roundRect(px+14,py+145,(pw-36)/2,30,6); ctx.fill();
+  ctx.fillStyle='#fff'; ctx.font='bold 12px Arial'; ctx.textAlign='center';
+  ctx.fillText('Search', px+14+(pw-36)/4, py+164);
+  ctx.fillStyle='rgba(80,80,100,0.4)'; ctx.beginPath(); ctx.roundRect(px+pw/2+4,py+145,(pw-36)/2,30,6); ctx.fill();
+  ctx.fillStyle='#94a3b8'; ctx.fillText('Clear', px+pw/2+4+(pw-36)/4, py+164);
+
+  // status
+  ctx.textAlign='left'; ctx.fillStyle='#22c55e'; ctx.font='11px Arial';
+  ctx.fillText('Found 847 match(es)', px+14, py+200);
+
+  // Top 3
+  ctx.fillStyle='#e879f9'; ctx.font='bold 12px Arial'; ctx.fillText('Top 3 Density Areas', px+14, py+230);
+  ctx.fillStyle='#64748b'; ctx.font='9px Arial'; ctx.fillText('Click to jump to high density areas', px+14, py+246);
+
+  [{r:'#1',p:'12%',n:'156 matches'},{r:'#2',p:'45%',n:'89 matches'},{r:'#3',p:'78%',n:'52 matches'}].forEach((h,i)=>{
+    const hy=py+260+i*48;
+    ctx.fillStyle='rgba(139,92,246,0.12)'; ctx.beginPath(); ctx.roundRect(px+14,hy,pw-28,40,6); ctx.fill();
+    ctx.fillStyle='#dc2626'; ctx.font='bold 11px Arial'; ctx.textAlign='left'; ctx.fillText(h.r, px+24, hy+16);
+    ctx.fillStyle='#e2e8f0'; ctx.font='11px Arial'; ctx.fillText(h.p+' ('+h.n+')', px+52, hy+16);
+    ctx.fillStyle='#64748b'; ctx.font='9px Arial'; ctx.fillText('RuntimeError: expected float...', px+52, hy+32);
+  });
+
+  // preset section
+  ctx.fillStyle='rgba(139,92,246,0.12)'; ctx.beginPath(); ctx.roundRect(px+14,py+415,pw-28,80,6); ctx.fill();
+  ctx.fillStyle='#94a3b8'; ctx.font='11px Arial'; ctx.textAlign='left';
+  ctx.fillText('Preset: Error Keywords (363)', px+24, py+440);
+  ctx.fillStyle='#64748b'; ctx.font='9px Arial';
+  ctx.fillText('3 slots | CSV format | 500 max', px+24, py+460);
+
+  colorBar(ctx, 60, h-35, 380, 10);
+  ctx.fillStyle='#64748b'; ctx.font='11px Arial'; ctx.textAlign='left';
+  ctx.fillText('Severity: Critical → Info', 460, h-25);
+})();
+
+// === Small Promo 440x280 ===
+(function() {
+  const c = document.getElementById('c2'); const ctx = c.getContext('2d');
+  const w=440, h=280;
+  drawGrid(ctx, w, h);
+  drawIcon(ctx, 28, 35, 46);
+  neonText(ctx, 'RSearch', 195, 58, 32, '#e879f9', '#c026d3');
+  ctx.fillStyle='#94a3b8'; ctx.font='13px Arial'; ctx.textAlign='center';
+  ctx.fillText('Error Log Search & Highlighter', w/2, 100);
+  pill(ctx, 30, 125, 120, 26, '363+ Patterns');
+  pill(ctx, 160, 125, 120, 26, 'Auto-Highlight');
+  pill(ctx, 290, 125, 120, 26, 'Top 3 Hotspots');
+  colorBar(ctx, 40, 175, 360, 14);
+  ctx.fillStyle='#94a3b8'; ctx.font='11px Arial'; ctx.textAlign='center';
+  ctx.fillText('Severity-based color coding for developers', w/2, 215);
+  ctx.fillStyle='rgba(139,92,246,0.45)'; ctx.font='11px Arial';
+  ctx.fillText('Open Source  |  Privacy First  |  Manifest V3', w/2, 250);
+})();
+
+// === Marquee 1400x560 ===
+(function() {
+  const c = document.getElementById('c3'); const ctx = c.getContext('2d');
+  const w=1400, h=560;
+  drawGrid(ctx, w, h);
+  drawIcon(ctx, 70, 80, 70);
+  neonText(ctx, 'RSearch', 300, 115, 50, '#e879f9', '#c026d3');
+  ctx.fillStyle='#94a3b8'; ctx.font='20px Arial'; ctx.textAlign='left';
+  ctx.fillText('Advanced Error Log Search & Highlighter', 90, 195);
+  ['363+ Patterns','Auto-Search','Top 3 Hotspots','8 Severity Colors','Regex + Keywords'].forEach((t,i)=>{
+    pill(ctx, 90+i*140, 225, 130, 28, t);
+  });
+  colorBar(ctx, 90, 280, 480, 18);
+  ctx.fillStyle='#64748b'; ctx.font='12px Arial'; ctx.textAlign='left'; ctx.fillText('Critical', 90, 316);
+  ctx.textAlign='right'; ctx.fillText('Info', 570, 316);
+
+  // log window
+  const lx=760,ly=40,lw=570,lh=470;
+  ctx.fillStyle='rgba(25,18,50,0.85)'; ctx.strokeStyle='rgba(139,92,246,0.25)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.roundRect(lx,ly,lw,lh,8); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='rgba(35,28,60,0.9)'; ctx.fillRect(lx,ly,lw,26);
+  ['#ef4444','#eab308','#22c55e'].forEach((c,i)=>{ctx.fillStyle=c;ctx.beginPath();ctx.arc(lx+16+i*14,ly+13,4,0,Math.PI*2);ctx.fill()});
+  drawLogs(ctx, lx, ly+30, lw, lh-30, 24);
+
+  ctx.fillStyle='rgba(139,92,246,0.4)'; ctx.font='13px Arial'; ctx.textAlign='center';
+  ctx.fillText('Open Source  |  Privacy First  |  Manifest V3  |  For Developers', w/2, h-25);
+
+  // bottom left: for developers
+  ctx.textAlign='left'; ctx.fillStyle='#64748b'; ctx.font='14px Arial';
+  ctx.fillText('Perfect for debugging logs, analyzing errors,', 90, 370);
+  ctx.fillText('and monitoring systems.', 90, 392);
+})();
+
+function download(id, name) {
+  const c = document.getElementById(id);
+  // create temp canvas to strip alpha
+  const tc = document.createElement('canvas');
+  tc.width = c.width; tc.height = c.height;
+  const tctx = tc.getContext('2d');
+  tctx.fillStyle = '#0f0a2e';
+  tctx.fillRect(0, 0, tc.width, tc.height);
+  tctx.drawImage(c, 0, 0);
+  const a = document.createElement('a');
+  a.href = tc.toDataURL('image/png');
+  a.download = name;
+  a.click();
+}
+
+function downloadAll() {
+  download('c1','screenshot-1280x800.png');
+  setTimeout(() => download('c2','promo-small-440x280.png'), 500);
+  setTimeout(() => download('c3','promo-marquee-1400x560.png'), 1000);
+}
+</script>
+</body>
+</html>

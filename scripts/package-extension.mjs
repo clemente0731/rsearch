@@ -139,15 +139,13 @@ async function main() {
       'popup.js',
       'popup.html',
       'background.js',
-      'styles.css'
-    ];
-
-    const optionalFiles = [
-      'icon.svg',
+      'styles.css',
       'icon16.png',
       'icon48.png',
       'icon128.png'
     ];
+
+    const optionalFiles = [];
 
     await ensureFilesExist(requiredFiles);
     const resolvedOptional = await collectOptionalFiles(optionalFiles);
