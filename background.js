@@ -27,7 +27,12 @@ async function executeSearch(tabId) {
     const keywords = await getKeywordsFromStorage();
     if (!keywords) return;
     
-    // inject content script
+    // inject styles and content script
+    await chrome.scripting.insertCSS({
+      target: { tabId: tabId },
+      files: ['styles.css']
+    });
+    
     await chrome.scripting.executeScript({
       target: { tabId: tabId },
       files: ['content.js']
@@ -49,11 +54,20 @@ async function executeSearch(tabId) {
   }
 }
 
+// check if url is searchable
+function isSearchableUrl(url) {
+  if (!url) return false;
+  if (!url.startsWith('http://') && !url.startsWith('https://')) return false;
+  // chrome web store and google internal pages block extensions
+  if (url.startsWith('https://chromewebstore.google.com')) return false;
+  if (url.startsWith('https://chrome.google.com/webstore')) return false;
+  return true;
+}
+
 // listen for tab updates (page load complete)
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  // only trigger on complete load and valid http/https urls
   if (changeInfo.status !== 'complete') return;
-  if (!tab.url || (!tab.url.startsWith('http://') && !tab.url.startsWith('https://'))) return;
+  if (!isSearchableUrl(tab.url)) return;
   
   await executeSearch(tabId);
 });
@@ -62,8 +76,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
   try {
     const tab = await chrome.tabs.get(activeInfo.tabId);
-    
-    if (!tab.url || (!tab.url.startsWith('http://') && !tab.url.startsWith('https://'))) return;
+    if (!isSearchableUrl(tab.url)) return;
     
     await executeSearch(activeInfo.tabId);
   } catch (error) {

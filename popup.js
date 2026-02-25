@@ -881,13 +881,15 @@ async function injectScripts(tabId) {
     injectedTabs.delete(tabId);
     console.error('Injection error:', error);
     
-    let errorMessage = 'failed to inject content scripts';
+    let errorMessage = 'Cannot run on this page';
     
     if (error && error.message) {
-      if (error.message.includes('Cannot access contents of url')) {
-        errorMessage = 'content scripts cannot run on this page';
+      if (error.message.includes('Cannot access') || error.message.includes('chrome://')) {
+        errorMessage = 'Cannot run on chrome:// or internal pages. Try a regular website.';
+      } else if (error.message.includes('Cannot access contents of url')) {
+        errorMessage = 'This page does not allow extensions to run.';
       } else {
-        errorMessage = 'failed to inject: ' + error.message;
+        errorMessage = 'Cannot run on this page: ' + error.message;
       }
     }
     
@@ -961,7 +963,14 @@ searchBtn.addEventListener('click', async () => {
     return;
   }
 
-  const tabId = tabs[0].id;
+  const tab = tabs[0];
+  const tabId = tab.id;
+
+  // block chrome://, edge://, about:, etc.
+  if (tab.url && (tab.url.startsWith('chrome://') || tab.url.startsWith('edge://') || tab.url.startsWith('about:'))) {
+    showStatus('Cannot run on internal pages. Try a regular website.', 'error');
+    return;
+  }
 
   try {
     await injectScripts(tabId);
@@ -1022,7 +1031,13 @@ clearBtn.addEventListener('click', async () => {
     return;
   }
 
-  const tabId = tabs[0].id;
+  const tab = tabs[0];
+  const tabId = tab.id;
+
+  if (tab.url && (tab.url.startsWith('chrome://') || tab.url.startsWith('edge://') || tab.url.startsWith('about:'))) {
+    showStatus('Cannot run on internal pages.', 'error');
+    return;
+  }
 
   try {
     await injectScripts(tabId);
@@ -1031,6 +1046,7 @@ clearBtn.addEventListener('click', async () => {
     if (response && response.success) {
       showStatus('Highlights cleared', 'success');
       patternInput.value = '';
+      clearHotspots();
     }
   } catch (error) {
     showStatus('Error: ' + error.message, 'error');

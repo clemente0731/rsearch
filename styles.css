@@ -9,15 +9,15 @@
   box-shadow: 0 0 2px rgba(0,0,0,0.3) !important;
 }
 
-/* highlight style for AND mode row matches - Background */
+/* highlight style for row-level matches */
 .rsearch-row-highlight-bg {
-  background-color: #ffe6e6 !important; /* Soft Pink */
+  background-color: #ffe6e6 !important;
 }
 
-/* highlight style for AND mode row matches - Start Indicator */
+/* row highlight start indicator */
 .rsearch-row-highlight-start {
-  box-shadow: inset 4px 0 0 #ff4444 !important; /* Red indicator on left */
-  padding-left: 4px !important; /* Make space for the bar */
+  box-shadow: inset 4px 0 0 #ff4444 !important;
+  padding-left: 4px !important;
 }
 
 /* Scrollbar Marker Container */

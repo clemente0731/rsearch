@@ -10,10 +10,12 @@ if (window.rsearchInjected) {
 
   // send progress update to popup
   function sendProgress(processed, total, matches, startTime) {
+    if (total <= 0) return;
     const elapsed = Date.now() - startTime;
+    if (elapsed <= 0) return;
     const rate = processed / elapsed; // nodes per ms
     const remaining = total - processed;
-    const estimatedMs = remaining / rate;
+    const estimatedMs = rate > 0 ? remaining / rate : 0;
     
     const percent = Math.round((processed / total) * 100);
     
