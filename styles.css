@@ -52,3 +52,37 @@
   transform: translateY(-50%) scaleX(1.5) !important;
   transform-origin: right center !important;
 }
+
+/* Tooltip for scrollbar markers */
+#rsearch-marker-tooltip {
+  position: fixed !important;
+  right: 24px !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+  z-index: 2147483647 !important;
+  max-width: 200px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  transform: translateY(-50%) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Flash animation for scrolling to a match */
+@keyframes rsearch-flash {
+  0%   { outline: 3px solid #2563eb; outline-offset: 2px; opacity: 1; }
+  25%  { outline: 3px solid #2563eb; outline-offset: 2px; opacity: 0.3; }
+  50%  { outline: 3px solid #2563eb; outline-offset: 2px; opacity: 1; }
+  75%  { outline: 3px solid #2563eb; outline-offset: 2px; opacity: 0.3; }
+  100% { outline: 3px solid transparent; outline-offset: 0; opacity: 1; }
+}
+
+.rsearch-flash {
+  animation: rsearch-flash 1.5s ease-in-out !important;
+}

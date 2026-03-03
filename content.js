@@ -81,9 +81,14 @@ if (window.rsearchInjected) {
   ];
 
   // hotspot tracking: collect all match positions
-  let matchPositions = []; // stores { element, offsetTop, text }
+  let matchPositions = []; // stores { element, offsetTop, text, color }
   let topDensityAreas = []; // stores TOP3 density areas
   const WINDOW_SIZE = 300; // sliding window height in pixels
+  const MAX_SCROLLBAR_MARKERS = 500;
+
+  // dynamic update state for scrollbar markers
+  let markerRefreshTimer = null;
+  let markerObserver = null;
 
   // Create or get scrollbar container
   function getScrollbarContainer() {
@@ -94,6 +99,9 @@ if (window.rsearchInjected) {
     }
     scrollbarContainer.innerHTML = '';
     
+    // tear down previous dynamic observer before new search
+    cleanupDynamicObserver();
+    
     // reset match positions
     matchPositions = [];
     topDensityAreas = [];
@@ -101,8 +109,8 @@ if (window.rsearchInjected) {
     return scrollbarContainer;
   }
 
-  // Track element for hotspot calculation
-  function trackForHotspot(element) {
+  // Track element for hotspot calculation and scrollbar marker rendering
+  function trackForHotspot(element, color) {
     if (!element) return;
     
     // get absolute position in document
@@ -113,11 +121,12 @@ if (window.rsearchInjected) {
     const text = element.textContent || '';
     const preview = text.substring(0, 50).trim();
     
-    // store element and position
+    // store element, position, and highlight color
     matchPositions.push({
       element: element,
       offsetTop: offsetTop,
-      text: preview
+      text: preview,
+      color: color || '#c026d3'
     });
   }
 
@@ -287,6 +296,245 @@ if (window.rsearchInjected) {
     return false;
   }
 
+  // ============================================================
+  // SCROLLBAR MARKER RENDERING
+  // ============================================================
+
+  // merge nearby markers when total exceeds limit for performance
+  function consolidateMarkerPositions(positions, maxCount) {
+    const sorted = positions.slice().sort((a, b) => a.offsetTop - b.offsetTop);
+
+    const docHeight = document.documentElement.scrollHeight;
+    const viewportHeight = window.innerHeight;
+    // markers within this distance map to < 1px on the scrollbar
+    const mergeThreshold = docHeight / viewportHeight;
+
+    const consolidated = [];
+    let group = [sorted[0]];
+
+    for (let i = 1; i < sorted.length; i++) {
+      if (sorted[i].offsetTop - group[0].offsetTop <= mergeThreshold) {
+        group.push(sorted[i]);
+      } else {
+        consolidated.push(group[0]);
+        group = [sorted[i]];
+      }
+    }
+    if (group.length > 0) {
+      consolidated.push(group[0]);
+    }
+
+    // if still too many after merge, sample evenly
+    if (consolidated.length > maxCount) {
+      const step = consolidated.length / maxCount;
+      const sampled = [];
+      for (let i = 0; i < maxCount; i++) {
+        sampled.push(consolidated[Math.floor(i * step)]);
+      }
+      return sampled;
+    }
+
+    return consolidated;
+  }
+
+  // get or create the tooltip element used by markers
+  function getMarkerTooltip() {
+    let tooltip = document.getElementById('rsearch-marker-tooltip');
+    if (!tooltip) {
+      tooltip = document.createElement('div');
+      tooltip.id = 'rsearch-marker-tooltip';
+      document.body.appendChild(tooltip);
+    }
+    tooltip.style.display = 'none';
+    return tooltip;
+  }
+
+  // render scrollbar markers from collected matchPositions
+  function renderScrollbarMarkers() {
+    if (!scrollbarContainer) return;
+
+    scrollbarContainer.innerHTML = '';
+
+    if (matchPositions.length === 0) return;
+
+    const docHeight = document.documentElement.scrollHeight;
+    const viewportHeight = window.innerHeight;
+
+    // skip when the page fits entirely in the viewport
+    if (docHeight <= viewportHeight) return;
+
+    const tooltip = getMarkerTooltip();
+
+    // consolidate if there are too many markers
+    let positionsToRender = matchPositions;
+    if (matchPositions.length > MAX_SCROLLBAR_MARKERS) {
+      positionsToRender = consolidateMarkerPositions(matchPositions, MAX_SCROLLBAR_MARKERS);
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    for (let i = 0; i < positionsToRender.length; i++) {
+      const pos = positionsToRender[i];
+      const marker = document.createElement('div');
+      marker.className = 'rsearch-scrollbar-marker';
+
+      // proportional position on the scrollbar
+      const topPercent = (pos.offsetTop / docHeight) * 100;
+      marker.style.top = topPercent + '%';
+      marker.style.backgroundColor = pos.color || '#c026d3';
+
+      // hover tooltip showing first 20 chars of matched text
+      marker.addEventListener('mouseenter', function () {
+        const previewText = (pos.text || '').substring(0, 20);
+        tooltip.textContent = previewText || '...';
+        tooltip.style.display = 'block';
+
+        const markerRect = marker.getBoundingClientRect();
+        tooltip.style.top = markerRect.top + (markerRect.height / 2) + 'px';
+      });
+
+      marker.addEventListener('mouseleave', function () {
+        tooltip.style.display = 'none';
+      });
+
+      // click to scroll to the corresponding match
+      marker.addEventListener('click', function (e) {
+        e.stopPropagation();
+        scrollToMatchElement(pos);
+      });
+
+      fragment.appendChild(marker);
+    }
+
+    scrollbarContainer.appendChild(fragment);
+
+    // activate dynamic observers after markers are rendered
+    setupDynamicObserver();
+  }
+
+  // smooth scroll to a match element and flash it
+  function scrollToMatchElement(pos) {
+    if (!pos) return;
+
+    const element = pos.element;
+
+    if (element && document.body.contains(element)) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+
+      // remove previous flash if still active
+      element.classList.remove('rsearch-flash');
+      // force reflow so re-adding the class restarts the animation
+      void element.offsetWidth;
+      element.classList.add('rsearch-flash');
+
+      setTimeout(function () {
+        element.classList.remove('rsearch-flash');
+      }, 1500);
+    } else {
+      // element removed from DOM, fall back to stored offset
+      window.scrollTo({
+        top: pos.offsetTop - window.innerHeight / 2,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  // ============================================================
+  // DYNAMIC MARKER UPDATE (resize / DOM mutation)
+  // ============================================================
+
+  function refreshMarkerPositions() {
+    if (matchPositions.length === 0) return;
+
+    let changed = false;
+    for (let i = 0; i < matchPositions.length; i++) {
+      const pos = matchPositions[i];
+      if (pos.element && document.body.contains(pos.element)) {
+        const rect = pos.element.getBoundingClientRect();
+        const newTop = rect.top + window.scrollY;
+        if (Math.abs(newTop - pos.offsetTop) > 1) {
+          pos.offsetTop = newTop;
+          changed = true;
+        }
+      }
+    }
+
+    if (changed) {
+      renderScrollbarMarkers();
+    }
+  }
+
+  function scheduleMarkerRefresh() {
+    if (markerRefreshTimer) {
+      clearTimeout(markerRefreshTimer);
+    }
+    markerRefreshTimer = setTimeout(function () {
+      refreshMarkerPositions();
+    }, 300);
+  }
+
+  function setupDynamicObserver() {
+    // clean up before re-attaching
+    cleanupDynamicObserver();
+
+    markerObserver = new MutationObserver(function (mutations) {
+      let hasSignificantChange = false;
+
+      for (let m = 0; m < mutations.length; m++) {
+        const mutation = mutations[m];
+        if (mutation.type !== 'childList') continue;
+
+        for (let n = 0; n < mutation.addedNodes.length; n++) {
+          const node = mutation.addedNodes[n];
+          if (node.nodeType !== Node.ELEMENT_NODE) continue;
+
+          const id = node.id || '';
+          const cls = (node.className && typeof node.className === 'string')
+            ? node.className
+            : '';
+
+          // skip our own injected elements
+          if (id.startsWith('rsearch') || cls.includes('rsearch') || cls.includes('regex-search-highlight')) {
+            continue;
+          }
+          hasSignificantChange = true;
+          break;
+        }
+        if (hasSignificantChange) break;
+      }
+
+      if (hasSignificantChange) {
+        scheduleMarkerRefresh();
+      }
+    });
+
+    markerObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  function cleanupDynamicObserver() {
+    if (markerObserver) {
+      markerObserver.disconnect();
+      markerObserver = null;
+    }
+    if (markerRefreshTimer) {
+      clearTimeout(markerRefreshTimer);
+      markerRefreshTimer = null;
+    }
+  }
+
+  // recalculate marker positions on window resize
+  window.addEventListener('resize', function () {
+    if (matchPositions.length > 0) {
+      scheduleMarkerRefresh();
+    }
+  });
+
   // async keywords search with progress updates
   async function performKeywordsSearchAsync(keywords, caseInsensitive, intersectionMode) {
     try {
@@ -366,10 +614,13 @@ if (window.rsearchInjected) {
         }
       }
       
+      const hotspots = getTopHotspots();
+      renderScrollbarMarkers();
+
       return {
         success: true,
         count: totalMatches,
-        hotspots: getTopHotspots()
+        hotspots: hotspots
       };
       
     } catch (error) {
@@ -482,10 +733,13 @@ if (window.rsearchInjected) {
       }
     }
     
+    const hotspots = getTopHotspots();
+    renderScrollbarMarkers();
+
     return {
       success: true,
       count: matchCount,
-      hotspots: getTopHotspots()
+      hotspots: hotspots
     };
   }
 
@@ -585,7 +839,7 @@ if (window.rsearchInjected) {
               highlightedElements.push(keywordSpan);
               
               // Add scrollbar marker for keyword
-              trackForHotspot(keywordSpan);
+              trackForHotspot(keywordSpan, colors.bg);
               
               lastIndex = match.index + match[0].length;
               
@@ -776,10 +1030,13 @@ if (window.rsearchInjected) {
         }
       }
       
+      const hotspots = getTopHotspots();
+      renderScrollbarMarkers();
+
       return {
         success: true,
         count: matchCount,
-        hotspots: getTopHotspots()
+        hotspots: hotspots
       };
       
     } catch (error) {
@@ -875,7 +1132,7 @@ if (window.rsearchInjected) {
       fragment.appendChild(span);
       highlightedElements.push(span);
       
-      trackForHotspot(span);
+      trackForHotspot(span, '#c026d3');
       
       lastIndex = match.index + match[0].length;
       
@@ -952,7 +1209,7 @@ if (window.rsearchInjected) {
       fragment.appendChild(span);
       highlightedElements.push(span);
       
-      trackForHotspot(span);
+      trackForHotspot(span, colors.bg);
       
       lastIndex = match.index + match[0].length;
       
@@ -1000,6 +1257,15 @@ if (window.rsearchInjected) {
     if (scrollbarContainer) {
       scrollbarContainer.innerHTML = '';
     }
+    
+    // 4. Remove tooltip
+    const tooltip = document.getElementById('rsearch-marker-tooltip');
+    if (tooltip && tooltip.parentNode) {
+      tooltip.parentNode.removeChild(tooltip);
+    }
+    
+    // 5. Cleanup dynamic observer
+    cleanupDynamicObserver();
     
     highlightedElements = [];
     
