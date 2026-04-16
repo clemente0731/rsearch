@@ -1,6 +1,6 @@
 # Privacy Policy for RSearch
 
-**Last Updated: February 5, 2026**
+**Last Updated: April 17, 2026**
 
 ## Overview
 
